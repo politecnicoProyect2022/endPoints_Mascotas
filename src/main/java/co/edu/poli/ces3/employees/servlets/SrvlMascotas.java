@@ -36,7 +36,19 @@ public class SrvlMascotas extends HttpServlet {
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
 
-        out.print(gson.toJson(this.MASCOTAS)); //Pasar a formato Json
+        String idMascotas = request.getParameter("ID");
+
+        if(idMascotas == null){
+            out.print(gson.toJson(this.MASCOTAS)); //Pasar a formato Json
+        } else {
+            Mascostas result = searchMascota(Integer.parseInt(idMascotas));
+
+            if(result != null){
+                out.print(gson.toJson(result));
+            } else {
+                out.print(gson.toJson("Not found"));
+            }
+        }
 
         out.flush(); //Cerrar impresión
     }
@@ -133,6 +145,17 @@ public class SrvlMascotas extends HttpServlet {
         return params;
     }
 
+    private Mascostas searchMascota(int mascotaId){
+        ArrayList<Mascostas> myList = this.MASCOTAS;
+
+        for(Mascostas cont : myList){
+
+            if(cont.getID() == mascotaId){
+                return cont;
+            }
+        }
+        return null;
+    }
     private boolean actualizarMascota(JsonObject body){
         ArrayList<Mascostas> myList = this.MASCOTAS;
 
